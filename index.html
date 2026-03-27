@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ARKAN😱GALLERY</title>
+
+<style>
+body{
+  margin:0;
+  background:black;
+  color:white;
+  font-family:monospace;
+  overflow:hidden;
+}
+
+/* WALLPAPER PUNYA KAMU */
+body::before{
+  content:"";
+  position:fixed;
+  width:100%;height:100%;
+  background:url('cb823fcb-d202-41a0-be4c-872783161abd.jpeg') center/cover no-repeat;
+  opacity:0.3;
+  animation:glitch 3s infinite;
+  z-index:-1;
+  filter: blur(2px);
+}
+
+@keyframes glitch{
+  0%{transform:scale(1)}
+  50%{transform:scale(1.08) skew(2deg)}
+  100%{transform:scale(1)}
+}
+
+header{
+  text-align:center;
+  padding:20px;
+  font-size:30px;
+  letter-spacing:5px;
+}
+
+.login{
+  position:fixed;
+  width:100%;height:100%;
+  background:black;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  flex-direction:column;
+  z-index:10;
+}
+
+input,button{
+  padding:10px;
+  margin:5px;
+  border:none;
+  background:#111;
+  color:white;
+}
+
+button{background:red;cursor:pointer}
+
+.gallery{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+  gap:10px;
+  padding:20px;
+}
+
+.gallery img{
+  width:100%;
+  border-radius:10px;
+  filter:grayscale(100%);
+  transition:.3s;
+}
+
+.gallery img:hover{
+  transform:scale(1.1);
+  filter:grayscale(0%) brightness(120%);
+}
+
+.player{
+  position:fixed;
+  bottom:10px;
+  left:10px;
+  background:rgba(0,0,0,0.8);
+  padding:10px;
+}
+
+.chat{
+  position:fixed;
+  bottom:10px;
+  right:10px;
+  background:black;
+  padding:10px;
+  width:200px;
+  height:150px;
+  overflow:auto;
+  font-size:12px;
+  border:1px solid red;
+}
+
+.jumpscare{
+  position:fixed;
+  width:100%;height:100%;
+  background:black;
+  display:none;
+  justify-content:center;
+  align-items:center;
+  z-index:20;
+}
+
+.jumpscare img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+}
+
+.toggle{
+  position:fixed;
+  top:10px;
+  left:10px;
+  background:red;
+  padding:5px;
+  cursor:pointer;
+}
+</style>
+</head>
+
+<body>
+
+<div class="login" id="login">
+<h2>MASUK DULU...</h2>
+<input type="password" id="pass">
+<button onclick="login()">LOGIN</button>
+</div>
+
+<div class="toggle" onclick="toggleJumpscare()">JUMPSCARE: OFF</div>
+
+<header>ARKAN-ZONE</header>
+
+<div class="gallery" id="gallery">
+<img src="motion_photo_7523844779172652385~2.jpg">
+<img src="IMG_20260324_225639_424.jpg">
+<img src="IMG_20260324_225639_382.jpg">
+<img src="motion_photo_5823942349673579073.jpg">
+<img src="motion_photo_7247671055954824122.jpg">
+<img src="motion_photo_5808118521687866893~2.jpg">
+</div>
+
+<div class="player">
+<audio id="audio" controls></audio>
+<button onclick="play(0)">L1</button>
+<button onclick="play(1)">L2</button>
+<button onclick="play(2)">L3</button>
+</div>
+
+<div class="chat" id="chat"></div>
+
+<div class="jumpscare" id="jumpscare">
+<img src="https://i.imgur.com/8Km9tLL.jpg">
+</div>
+
+<script>
+const songs=[
+"https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3",
+"https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3",
+"https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3"
+];
+
+function play(i){
+  const a=document.getElementById('audio');
+  a.src=songs[i];
+  a.play();
+}
+
+function login(){
+  if(document.getElementById('pass').value==='arkan ganteng'){
+    document.getElementById('login').style.display='none';
+  } else alert('salah');
+}
+
+// fake chat horror
+const chat=document.getElementById('chat');
+const msgs=["halo...","kamu sendirian?","aku lihat kamu","jangan buka ini","terlambat..."];
+setInterval(()=>{
+  const m=document.createElement('div');
+  m.textContent=msgs[Math.floor(Math.random()*msgs.length)];
+  chat.appendChild(m);
+  chat.scrollTop=chat.scrollHeight;
+},3000);
+
+// jumpscare
+let active=false;
+function toggleJumpscare(){
+  active=!active;
+  document.querySelector('.toggle').innerText='JUMPSCARE: '+(active?'ON':'OFF');
+}
+
+setInterval(()=>{
+  if(active){
+    const j=document.getElementById('jumpscare');
+    j.style.display='flex';
+    setTimeout(()=>{j.style.display='none'},500);
+  }
+},10000);
+</script>
+
+</body>
+</html>
