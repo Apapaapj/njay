@@ -2,160 +2,134 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MADE | Dark Fashion Brand</title>
-  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+  <title>Rank Ibadah Ultimate Pro</title>
   <style>
-    *{margin:0;padding:0;box-sizing:border-box;scroll-behavior:smooth;}
-    body{
-      font-family:'Inter',sans-serif;
-      background:#050505;
-      color:#fff;
-      overflow-x:hidden;
-    }
-    nav{
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      padding:25px 8%;
-      position:fixed;
-      width:100%;
-      top:0;
-      z-index:100;
-      backdrop-filter:blur(10px);
-      background:rgba(0,0,0,0.6);
-    }
-    .logo{
-      font-family:'Cinzel',serif;
-      font-size:32px;
-      letter-spacing:6px;
-      font-weight:700;
-    }
-    nav ul{
-      display:flex;
-      gap:25px;
-      list-style:none;
-    }
-    nav a{
-      color:#fff;
-      text-decoration:none;
-      opacity:.8;
-    }
-    .hero{
-      min-height:100vh;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      text-align:center;
-      padding:0 10%;
-      background:linear-gradient(to bottom,rgba(0,0,0,.3),rgba(0,0,0,.9)), url('https://images.unsplash.com/photo-1523398002811-999ca8dec234?auto=format&fit=crop&w=1400&q=80') center/cover;
-    }
-    .hero-content h1{
-      font-family:'Cinzel',serif;
-      font-size:90px;
-      letter-spacing:12px;
-      text-shadow:0 0 30px rgba(255,255,255,.15);
-    }
-    .hero-content p{
-      margin-top:15px;
-      font-size:18px;
-      opacity:.75;
-    }
-    .btn{
-      display:inline-block;
-      margin-top:30px;
-      padding:15px 35px;
-      border:1px solid #fff;
-      color:#fff;
-      text-decoration:none;
-      transition:.3s;
-    }
-    .btn:hover{
-      background:#fff;
-      color:#000;
-    }
-    .section{
-      padding:100px 8%;
-    }
-    .section h2{
-      font-family:'Cinzel',serif;
-      font-size:42px;
-      margin-bottom:30px;
-    }
-    .products{
-      display:grid;
-      grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
-      gap:25px;
-    }
-    .card{
-      background:#111;
-      border-radius:20px;
-      overflow:hidden;
-      transition:.3s;
-    }
-    .card:hover{
-      transform:translateY(-8px);
-    }
-    .card img{
-      width:100%;
-      height:320px;
-      object-fit:cover;
-    }
-    .card-content{
-      padding:20px;
-    }
-    .card-content h3{
-      margin-bottom:10px;
-    }
-    footer{
-      text-align:center;
-      padding:40px;
-      background:#000;
-      opacity:.6;
-    }
+    body { font-family: Arial; background: linear-gradient(135deg,#020617,#0f172a); color: white; text-align: center; }
+    .card { background: #1e293b; padding: 20px; border-radius: 20px; width: 340px; margin: 20px auto; box-shadow: 0 0 20px rgba(0,0,0,0.5);}    
+    button { padding: 10px; margin: 5px; border: none; border-radius: 10px; cursor: pointer; width: 90%; }
+    .done { background: #22c55e; }
+    .miss { background: #ef4444; }
+    .progress { height: 10px; background: #334155; border-radius: 10px; overflow: hidden; margin: 10px 0; }
+    .bar { height: 100%; background: gold; width: 0%; }
   </style>
 </head>
-<body><nav>
-  <div class="logo">MADE</div>
-  <ul>
-    <li><a href="#home">Home</a></li>
-    <li><a href="#shop">Shop</a></li>
-    <li><a href="#about">About</a></li>
-  </ul>
-</nav><section class="hero" id="home">
-  <div class="hero-content">
-    <h1>MADE</h1>
-    <p>DARK STREETWEAR • MODERN SOUL • BUILT TO STAND OUT</p>
-    <a href="#shop" class="btn">SHOP NOW</a>
-  </div>
-</section><section class="section" id="shop">
-  <h2>NEW COLLECTION</h2>
-  <div class="products">
-    <div class="card">
-      <img src="https://images.unsplash.com/photo-1521572267360-ee0c2909d518?auto=format&fit=crop&w=800&q=80">
-      <div class="card-content">
-        <h3>Oversized Dark Tee</h3>
-        <p>Rp 149.000</p>
-      </div>
-    </div>
-    <div class="card">
-      <img src="https://images.unsplash.com/photo-1503342217505-b0a15ec3261c?auto=format&fit=crop&w=800&q=80">
-      <div class="card-content">
-        <h3>Urban Black Hoodie</h3>
-        <p>Rp 279.000</p>
-      </div>
-    </div>
-    <div class="card">
-      <img src="https://images.unsplash.com/photo-1496747611176-843222e1e57c?auto=format&fit=crop&w=800&q=80">
-      <div class="card-content">
-        <h3>Shadow Jacket</h3>
-        <p>Rp 329.000</p>
-      </div>
-    </div>
-  </div>
-</section><section class="section" id="about">
-  <h2>ABOUT MADE</h2>
-  <p>MADE adalah brand fashion dengan identitas dark modern streetwear yang dibuat untuk mereka yang ingin tampil bold, mysterious, dan berbeda dari yang lain.</p>
-</section><footer>
-  © 2026 MADE — ALL RIGHTS RESERVED
-</footer></body>
+<body>
+  <div class="card">
+    <h1>Rank Ibadah 🏆</h1>
+    <h2 id="rank">Warrior</h2>
+    <p>Bintang: <span id="star">0</span></p>
+    <p>Streak: <span id="streak">0</span> 🔥</p>
+    <p>Season Bulan: <span id="season"></span></p><div class="progress"><div class="bar" id="bar"></div></div>
+
+<h3>Checklist Sholat</h3>
+<button class="done" onclick="sholat('subuh')">Subuh</button>
+<button class="done" onclick="sholat('dzuhur')">Dzuhur</button>
+<button class="done" onclick="sholat('ashar')">Ashar</button>
+<button class="done" onclick="sholat('maghrib')">Maghrib</button>
+<button class="done" onclick="sholat('isya')">Isya</button>
+
+<button class="miss" onclick="resetDay()">Hari Terlewat ❌</button>
+<button onclick="requestNotif()">Aktifkan Notifikasi 🔔</button>
+
+  </div><audio id="sound" src="https://www.myinstants.com/media/sounds/ml-rank-up.mp3"></audio>
+
+<script>
+let star = parseInt(localStorage.getItem('star') || 0);
+let streak = parseInt(localStorage.getItem('streak') || 0);
+let doneToday = JSON.parse(localStorage.getItem('doneToday') || '{}');
+
+// SEASON
+let now = new Date();
+let currentMonth = now.getMonth();
+let lastMonth = parseInt(localStorage.getItem('lastMonth') || currentMonth);
+
+if (currentMonth !== lastMonth) {
+  // reset season
+  star = 0;
+  streak = 0;
+  doneToday = {};
+  localStorage.setItem('lastMonth', currentMonth);
+  alert("🏆 Season Baru Dimulai! Rank direset!");
+}
+
+document.getElementById('season').innerText = now.toLocaleString('id-ID', { month: 'long' });
+
+const ranks = [
+  { name: "Warrior", min: 0 },
+  { name: "Elite", min: 5 },
+  { name: "Master", min: 10 },
+  { name: "Grandmaster", min: 15 },
+  { name: "Epic", min: 20 },
+  { name: "Legend", min: 25 },
+  { name: "Mythic", min: 30 },
+  { name: "Mythic Immortal", min: 40 }
+];
+
+function getRank(star) {
+  let current = ranks[0].name;
+  for (let i = 0; i < ranks.length; i++) {
+    if (star >= ranks[i].min) current = ranks[i].name;
+  }
+  return current;
+}
+
+function update() {
+  document.getElementById('star').innerText = star;
+  document.getElementById('rank').innerText = getRank(star);
+  document.getElementById('streak').innerText = streak;
+
+  let next = ranks.find(r => r.min > star);
+  let percent = next ? (star / next.min) * 100 : 100;
+  document.getElementById('bar').style.width = percent + "%";
+
+  localStorage.setItem('star', star);
+  localStorage.setItem('streak', streak);
+  localStorage.setItem('doneToday', JSON.stringify(doneToday));
+}
+
+function sholat(waktu) {
+  if (!doneToday[waktu]) {
+    star++;
+    doneToday[waktu] = true;
+
+    if (Object.keys(doneToday).length === 5) {
+      streak++;
+      document.getElementById('sound').play();
+      notify("🔥 FULL SHOLAT! Rank Up!");
+    }
+
+    update();
+  }
+}
+
+function resetDay() {
+  doneToday = {};
+  streak = 0;
+  star = Math.max(0, star - 3);
+  update();
+}
+
+function requestNotif() {
+  Notification.requestPermission();
+}
+
+function notify(text) {
+  if (Notification.permission === "granted") {
+    new Notification(text);
+  }
+}
+
+setInterval(() => {
+  let now = new Date();
+  let hour = now.getHours();
+
+  if (hour === 4) notify("Waktu Subuh");
+  if (hour === 12) notify("Waktu Dzuhur");
+  if (hour === 15) notify("Waktu Ashar");
+  if (hour === 18) notify("Waktu Maghrib");
+  if (hour === 19) notify("Waktu Isya");
+}, 60000);
+
+update();
+</script></body>
 </html>
