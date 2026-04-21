@@ -1,135 +1,244 @@
-<!DOCTYPE html><html lang="id">
+<!DOCTYPE html>
+<html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Rank Ibadah Ultimate Pro</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Photo Booth Pro</title>
   <style>
-    body { font-family: Arial; background: linear-gradient(135deg,#020617,#0f172a); color: white; text-align: center; }
-    .card { background: #1e293b; padding: 20px; border-radius: 20px; width: 340px; margin: 20px auto; box-shadow: 0 0 20px rgba(0,0,0,0.5);}    
-    button { padding: 10px; margin: 5px; border: none; border-radius: 10px; cursor: pointer; width: 90%; }
-    .done { background: #22c55e; }
-    .miss { background: #ef4444; }
-    .progress { height: 10px; background: #334155; border-radius: 10px; overflow: hidden; margin: 10px 0; }
-    .bar { height: 100%; background: gold; width: 0%; }
+    :root{
+      --bg:#0f1115; --card:#171a21; --text:#e8ecf1; --muted:#9aa3b2;
+      --accent:#6ea8fe; --danger:#ff6b6b;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0; font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu;
+      background:linear-gradient(180deg,#0b0d12,#121622);
+      color:var(--text);
+      display:flex; flex-direction:column; align-items:center; gap:14px; padding:14px;
+    }
+    .wrap{width:100%; max-width:420px}
+    .card{
+      background:var(--card); border-radius:16px; padding:14px; box-shadow:0 10px 30px rgba(0,0,0,.35);
+    }
+    h2{margin:6px 0 10px; text-align:center}
+    .stage{
+      position:relative; overflow:hidden; border-radius:14px; background:#000;
+    }
+    video, canvas{
+      width:100%; height:auto; display:block;
+    }
+    .overlay{
+      position:absolute; inset:0; pointer-events:none;
+      display:flex; align-items:center; justify-content:center;
+      font-size:56px; font-weight:700; color:#fff;
+      text-shadow:0 4px 20px rgba(0,0,0,.6);
+      opacity:0; transition:.2s;
+    }
+    .flash{
+      position:absolute; inset:0; background:#fff; opacity:0;
+      transition:opacity .15s ease;
+    }
+    .controls{
+      display:grid; grid-template-columns:repeat(2,1fr); gap:8px; margin-top:10px;
+    }
+    button, select{
+      padding:10px 12px; border-radius:10px; border:none; cursor:pointer;
+      background:#232838; color:var(--text);
+    }
+    button.primary{background:var(--accent); color:#0b1220; font-weight:600}
+    button.warn{background:var(--danger); color:#200}
+    .row{display:flex; gap:8px; flex-wrap:wrap; margin-top:8px}
+    .small{font-size:12px; color:var(--muted)}
+    .preview{
+      margin-top:10px; border-radius:12px; overflow:hidden; background:#000;
+    }
+    .footer{font-size:12px; color:var(--muted); text-align:center}
   </style>
 </head>
 <body>
-  <div class="card">
-    <h1>Rank Ibadah 🏆</h1>
-    <h2 id="rank">Warrior</h2>
-    <p>Bintang: <span id="star">0</span></p>
-    <p>Streak: <span id="streak">0</span> 🔥</p>
-    <p>Season Bulan: <span id="season"></span></p><div class="progress"><div class="bar" id="bar"></div></div>
+  <div class="wrap">
+    <div class="card">
+      <h2>📸 Photo Booth Pro</h2>
 
-<h3>Checklist Sholat</h3>
-<button class="done" onclick="sholat('subuh')">Subuh</button>
-<button class="done" onclick="sholat('dzuhur')">Dzuhur</button>
-<button class="done" onclick="sholat('ashar')">Ashar</button>
-<button class="done" onclick="sholat('maghrib')">Maghrib</button>
-<button class="done" onclick="sholat('isya')">Isya</button>
+      <div class="stage">
+        <video id="video" autoplay playsinline></video>
+        <div id="overlay" class="overlay">3</div>
+        <div id="flash" class="flash"></div>
+      </div>
 
-<button class="miss" onclick="resetDay()">Hari Terlewat ❌</button>
-<button onclick="requestNotif()">Aktifkan Notifikasi 🔔</button>
+      <div class="controls">
+        <button id="btnStart" class="primary">Mulai Kamera</button>
+        <button id="btnSwitch">Ganti Kamera</button>
 
-  </div><audio id="sound" src="https://www.myinstants.com/media/sounds/ml-rank-up.mp3"></audio>
+        <button id="btnShot" class="primary">Ambil Foto</button>
+        <button id="btnCountdown">Countdown (3s)</button>
+
+        <select id="filter">
+          <option value="none">Filter: Normal</option>
+          <option value="vintage">Vintage</option>
+          <option value="bw">B/W</option>
+          <option value="warm">Warm</option>
+          <option value="cool">Cool</option>
+          <option value="contrast">High Contrast</option>
+        </select>
+        <button id="btnMirror">Mirror: OFF</button>
+      </div>
+
+      <div class="row">
+        <button id="btnDownload">Download</button>
+        <button id="btnClear" class="warn">Clear</button>
+      </div>
+
+      <div class="preview">
+        <canvas id="canvas"></canvas>
+      </div>
+
+      <div class="footer">Akan meminta izin kamera. Semua pemotretan dilakukan di perangkatmu.</div>
+    </div>
+  </div>
 
 <script>
-let star = parseInt(localStorage.getItem('star') || 0);
-let streak = parseInt(localStorage.getItem('streak') || 0);
-let doneToday = JSON.parse(localStorage.getItem('doneToday') || '{}');
+  const video = document.getElementById('video')
+  const canvas = document.getElementById('canvas')
+  const ctx = canvas.getContext('2d')
+  const overlay = document.getElementById('overlay')
+  const flash = document.getElementById('flash')
 
-// SEASON
-let now = new Date();
-let currentMonth = now.getMonth();
-let lastMonth = parseInt(localStorage.getItem('lastMonth') || currentMonth);
+  const btnStart = document.getElementById('btnStart')
+  const btnSwitch = document.getElementById('btnSwitch')
+  const btnShot = document.getElementById('btnShot')
+  const btnCountdown = document.getElementById('btnCountdown')
+  const btnDownload = document.getElementById('btnDownload')
+  const btnClear = document.getElementById('btnClear')
+  const filterSel = document.getElementById('filter')
+  const btnMirror = document.getElementById('btnMirror')
 
-if (currentMonth !== lastMonth) {
-  // reset season
-  star = 0;
-  streak = 0;
-  doneToday = {};
-  localStorage.setItem('lastMonth', currentMonth);
-  alert("🏆 Season Baru Dimulai! Rank direset!");
-}
+  let stream = null
+  let facing = "user" // front/back
+  let mirror = false
+  let lastImage = null
 
-document.getElementById('season').innerText = now.toLocaleString('id-ID', { month: 'long' });
-
-const ranks = [
-  { name: "Warrior", min: 0 },
-  { name: "Elite", min: 5 },
-  { name: "Master", min: 10 },
-  { name: "Grandmaster", min: 15 },
-  { name: "Epic", min: 20 },
-  { name: "Legend", min: 25 },
-  { name: "Mythic", min: 30 },
-  { name: "Mythic Immortal", min: 40 }
-];
-
-function getRank(star) {
-  let current = ranks[0].name;
-  for (let i = 0; i < ranks.length; i++) {
-    if (star >= ranks[i].min) current = ranks[i].name;
+  async function startCamera(){
+    try{
+      if(stream) stream.getTracks().forEach(t=>t.stop())
+      stream = await navigator.mediaDevices.getUserMedia({
+        video: { facingMode: facing }, audio:false
+      })
+      video.srcObject = stream
+    }catch(e){
+      alert("Kamera tidak diizinkan / tidak tersedia")
+    }
   }
-  return current;
-}
 
-function update() {
-  document.getElementById('star').innerText = star;
-  document.getElementById('rank').innerText = getRank(star);
-  document.getElementById('streak').innerText = streak;
+  function switchCamera(){
+    facing = (facing === "user") ? "environment" : "user"
+    startCamera()
+  }
 
-  let next = ranks.find(r => r.min > star);
-  let percent = next ? (star / next.min) * 100 : 100;
-  document.getElementById('bar').style.width = percent + "%";
+  function setMirror(){
+    mirror = !mirror
+    video.style.transform = mirror ? "scaleX(-1)" : "scaleX(1)"
+    btnMirror.textContent = "Mirror: " + (mirror ? "ON" : "OFF")
+  }
 
-  localStorage.setItem('star', star);
-  localStorage.setItem('streak', streak);
-  localStorage.setItem('doneToday', JSON.stringify(doneToday));
-}
+  function applyFilter(ctx, w, h){
+    const f = filterSel.value
+    if(f === "none") return
+    const img = ctx.getImageData(0,0,w,h)
+    const d = img.data
 
-function sholat(waktu) {
-  if (!doneToday[waktu]) {
-    star++;
-    doneToday[waktu] = true;
+    for(let i=0;i<d.length;i+=4){
+      let r=d[i], g=d[i+1], b=d[i+2]
 
-    if (Object.keys(doneToday).length === 5) {
-      streak++;
-      document.getElementById('sound').play();
-      notify("🔥 FULL SHOLAT! Rank Up!");
+      if(f==="bw"){
+        const avg=(r+g+b)/3
+        d[i]=d[i+1]=d[i+2]=avg
+      }
+      if(f==="vintage"){
+        d[i]=r*0.9+20
+        d[i+1]=g*0.7+15
+        d[i+2]=b*0.4+10
+      }
+      if(f==="warm"){
+        d[i]=r+20
+      }
+      if(f==="cool"){
+        d[i+2]=b+20
+      }
+      if(f==="contrast"){
+        d[i]=((r-128)*1.4)+128
+        d[i+1]=((g-128)*1.4)+128
+        d[i+2]=((b-128)*1.4)+128
+      }
     }
 
-    update();
+    ctx.putImageData(img,0,0)
   }
-}
 
-function resetDay() {
-  doneToday = {};
-  streak = 0;
-  star = Math.max(0, star - 3);
-  update();
-}
+  function takePhoto(){
+    const w = video.videoWidth
+    const h = video.videoHeight
+    canvas.width = w
+    canvas.height = h
 
-function requestNotif() {
-  Notification.requestPermission();
-}
+    if(mirror){
+      ctx.translate(w,0)
+      ctx.scale(-1,1)
+    }
 
-function notify(text) {
-  if (Notification.permission === "granted") {
-    new Notification(text);
+    ctx.drawImage(video,0,0,w,h)
+
+    if(mirror){
+      ctx.setTransform(1,0,0,1,0,0)
+    }
+
+    applyFilter(ctx,w,h)
+
+    // flash effect
+    flash.style.opacity = 1
+    setTimeout(()=> flash.style.opacity = 0, 120)
+
+    lastImage = canvas.toDataURL("image/png")
   }
-}
 
-setInterval(() => {
-  let now = new Date();
-  let hour = now.getHours();
+  function countdownShot(){
+    let n = 3
+    overlay.style.opacity = 1
+    overlay.textContent = n
 
-  if (hour === 4) notify("Waktu Subuh");
-  if (hour === 12) notify("Waktu Dzuhur");
-  if (hour === 15) notify("Waktu Ashar");
-  if (hour === 18) notify("Waktu Maghrib");
-  if (hour === 19) notify("Waktu Isya");
-}, 60000);
+    const timer = setInterval(()=>{
+      n--
+      if(n<=0){
+        clearInterval(timer)
+        overlay.style.opacity = 0
+        takePhoto()
+      } else {
+        overlay.textContent = n
+      }
+    },1000)
+  }
 
-update();
-</script></body>
+  function download(){
+    if(!lastImage) return alert("Belum ada foto")
+    const a = document.createElement("a")
+    a.href = lastImage
+    a.download = "foto.png"
+    a.click()
+  }
+
+  function clearCanvas(){
+    ctx.clearRect(0,0,canvas.width,canvas.height)
+    lastImage = null
+  }
+
+  btnStart.onclick = startCamera
+  btnSwitch.onclick = switchCamera
+  btnMirror.onclick = setMirror
+  btnShot.onclick = takePhoto
+  btnCountdown.onclick = countdownShot
+  btnDownload.onclick = download
+  btnClear.onclick = clearCanvas
+</script>
+
+</body>
 </html>
