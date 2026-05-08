@@ -1,244 +1,171 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Photo Booth Pro</title>
-  <style>
-    :root{
-      --bg:#0f1115; --card:#171a21; --text:#e8ecf1; --muted:#9aa3b2;
-      --accent:#6ea8fe; --danger:#ff6b6b;
-    }
-    *{box-sizing:border-box}
-    body{
-      margin:0; font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu;
-      background:linear-gradient(180deg,#0b0d12,#121622);
-      color:var(--text);
-      display:flex; flex-direction:column; align-items:center; gap:14px; padding:14px;
-    }
-    .wrap{width:100%; max-width:420px}
-    .card{
-      background:var(--card); border-radius:16px; padding:14px; box-shadow:0 10px 30px rgba(0,0,0,.35);
-    }
-    h2{margin:6px 0 10px; text-align:center}
-    .stage{
-      position:relative; overflow:hidden; border-radius:14px; background:#000;
-    }
-    video, canvas{
-      width:100%; height:auto; display:block;
-    }
-    .overlay{
-      position:absolute; inset:0; pointer-events:none;
-      display:flex; align-items:center; justify-content:center;
-      font-size:56px; font-weight:700; color:#fff;
-      text-shadow:0 4px 20px rgba(0,0,0,.6);
-      opacity:0; transition:.2s;
-    }
-    .flash{
-      position:absolute; inset:0; background:#fff; opacity:0;
-      transition:opacity .15s ease;
-    }
-    .controls{
-      display:grid; grid-template-columns:repeat(2,1fr); gap:8px; margin-top:10px;
-    }
-    button, select{
-      padding:10px 12px; border-radius:10px; border:none; cursor:pointer;
-      background:#232838; color:var(--text);
-    }
-    button.primary{background:var(--accent); color:#0b1220; font-weight:600}
-    button.warn{background:var(--danger); color:#200}
-    .row{display:flex; gap:8px; flex-wrap:wrap; margin-top:8px}
-    .small{font-size:12px; color:var(--muted)}
-    .preview{
-      margin-top:10px; border-radius:12px; overflow:hidden; background:#000;
-    }
-    .footer{font-size:12px; color:var(--muted); text-align:center}
-  </style>
-</head>
-<body>
-  <div class="wrap">
-    <div class="card">
-      <h2>📸 Photo Booth Pro</h2>
+      export default function CyberBasicClassRoom() { const guides = [ "Apa Itu Cyber Security", "Dasar Ethical Hacking", "Apa Itu Bug Hunter", "Apa Itu Bug Bounty", "Cara Memulai Bug Bounty", "Belajar HTML Dasar", "Belajar CSS Dasar", "Belajar JavaScript Dasar", "Belajar HTTP & HTTPS", "Dasar Networking", "Belajar Linux", "Dasar Termux", "Install Tools di Termux", "Cara Membuat Website", "Dasar Keamanan Website", "Belajar API", "Cara Menggunakan GitHub", "Dasar SQL", "Cara Belajar Programming", "Tips Menjadi Bug Bounty Pemula", ];
 
-      <div class="stage">
-        <video id="video" autoplay playsinline></video>
-        <div id="overlay" class="overlay">3</div>
-        <div id="flash" class="flash"></div>
+const guideImages = [ "https://images.unsplash.com/photo-1518770660439-4636190af475", "https://images.unsplash.com/photo-1516321318423-f06f85e504b3", "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5", "https://images.unsplash.com/photo-1510915228340-29c85a43dcfe", "https://images.unsplash.com/photo-1504639725590-34d0984388bd", ]; "Apa Itu Cyber Security", "Dasar Ethical Hacking", "Apa Itu Bug Hunter", "Apa Itu Bug Bounty", "Cara Memulai Bug Bounty", "Belajar HTML Dasar", "Belajar CSS Dasar", "Belajar JavaScript Dasar", "Belajar HTTP & HTTPS", "Dasar Networking", "Belajar Linux", "Dasar Termux", "Install Tools di Termux", "Cara Membuat Website", "Dasar Keamanan Website", "Belajar API", "Cara Menggunakan GitHub", "Dasar SQL", "Cara Belajar Programming", "Tips Menjadi Bug Bounty Pemula", ];
+
+return ( <div className="min-h-screen bg-black text-green-400 font-mono p-6"> <header className="text-center py-10 border-b border-green-700 relative overflow-hidden"> <div className="absolute inset-0 opacity-10 bg-[radial-gradient(circle,_#00ff88_1px,_transparent_1px)] bg-[size:20px_20px]"></div>
+
+<div className="flex justify-center mb-6 relative z-10">
+      <div className="w-32 h-32 rounded-full border-4 border-green-500 shadow-[0_0_40px_#00ff88] overflow-hidden animate-pulse">
+        <img
+          src="https://images.unsplash.com/photo-1518770660439-4636190af475"
+          alt="CyberBasicClassRoom Logo"
+          className="w-full h-full object-cover"
+        />
       </div>
-
-      <div class="controls">
-        <button id="btnStart" class="primary">Mulai Kamera</button>
-        <button id="btnSwitch">Ganti Kamera</button>
-
-        <button id="btnShot" class="primary">Ambil Foto</button>
-        <button id="btnCountdown">Countdown (3s)</button>
-
-        <select id="filter">
-          <option value="none">Filter: Normal</option>
-          <option value="vintage">Vintage</option>
-          <option value="bw">B/W</option>
-          <option value="warm">Warm</option>
-          <option value="cool">Cool</option>
-          <option value="contrast">High Contrast</option>
-        </select>
-        <button id="btnMirror">Mirror: OFF</button>
-      </div>
-
-      <div class="row">
-        <button id="btnDownload">Download</button>
-        <button id="btnClear" class="warn">Clear</button>
-      </div>
-
-      <div class="preview">
-        <canvas id="canvas"></canvas>
-      </div>
-
-      <div class="footer">Akan meminta izin kamera. Semua pemotretan dilakukan di perangkatmu.</div>
     </div>
-  </div>
+    <h1 className="text-5xl font-bold tracking-widest">
+      CyberBasicClassRoom
+    </h1>
+    <p className="mt-4 text-lg text-green-300">
+      Komunitas Belajar Cyber Security, Coding, dan Bug Bounty
+    </p>
 
-<script>
-  const video = document.getElementById('video')
-  const canvas = document.getElementById('canvas')
-  const ctx = canvas.getContext('2d')
-  const overlay = document.getElementById('overlay')
-  const flash = document.getElementById('flash')
+    <div className="mt-6 flex flex-wrap justify-center gap-4">
+      <a
+        href="https://www.instagram.com/4rknnnajaaa?igsh=MXI4ZmR6bGNld2NwMw=="
+        className="bg-green-500 text-black px-5 py-2 rounded-xl hover:scale-105 transition"
+      >
+        Instagram Creator
+      </a>
 
-  const btnStart = document.getElementById('btnStart')
-  const btnSwitch = document.getElementById('btnSwitch')
-  const btnShot = document.getElementById('btnShot')
-  const btnCountdown = document.getElementById('btnCountdown')
-  const btnDownload = document.getElementById('btnDownload')
-  const btnClear = document.getElementById('btnClear')
-  const filterSel = document.getElementById('filter')
-  const btnMirror = document.getElementById('btnMirror')
+      <button className="border border-green-500 px-5 py-2 rounded-xl hover:bg-green-500 hover:text-black transition">
+        Join Community
+      </button>
+    </div>
+  </header>
 
-  let stream = null
-  let facing = "user" // front/back
-  let mirror = false
-  let lastImage = null
+  <section className="py-12 grid md:grid-cols-2 gap-8">
+    <div className="bg-zinc-900 rounded-3xl p-6 border border-green-800 shadow-2xl">
+      <h2 className="text-3xl font-bold mb-4 text-green-300">
+        Tentang Komunitas
+      </h2>
 
-  async function startCamera(){
-    try{
-      if(stream) stream.getTracks().forEach(t=>t.stop())
-      stream = await navigator.mediaDevices.getUserMedia({
-        video: { facingMode: facing }, audio:false
-      })
-      video.srcObject = stream
-    }catch(e){
-      alert("Kamera tidak diizinkan / tidak tersedia")
-    }
-  }
+      <p className="leading-8 text-green-200">
+        CyberBasicClassRoom adalah komunitas belajar cyber security dan coding
+        untuk pemula. Website ini dibuat untuk membantu orang belajar dasar
+        bug bounty, ethical hacking, networking, HTML, Linux, Termux, dan
+        keamanan website secara legal dan edukatif.
+      </p>
 
-  function switchCamera(){
-    facing = (facing === "user") ? "environment" : "user"
-    startCamera()
-  }
+      <div className="mt-6">
+        <h3 className="text-2xl font-bold mb-3">Create By</h3>
+        <p className="text-xl">4rknnnajaaa</p>
+      </div>
+    </div>
 
-  function setMirror(){
-    mirror = !mirror
-    video.style.transform = mirror ? "scaleX(-1)" : "scaleX(1)"
-    btnMirror.textContent = "Mirror: " + (mirror ? "ON" : "OFF")
-  }
+    <div className="bg-zinc-900 rounded-3xl p-6 border border-green-800 shadow-2xl">
+      <h2 className="text-3xl font-bold mb-4 text-green-300">
+        Login Community
+      </h2>
 
-  function applyFilter(ctx, w, h){
-    const f = filterSel.value
-    if(f === "none") return
-    const img = ctx.getImageData(0,0,w,h)
-    const d = img.data
+      <div className="space-y-4">
+        <div className="bg-black border border-green-700 rounded-xl p-3 text-left text-green-400 text-sm">
+          <p>Demo Login Admin</p>
+          <p>Username: admin</p>
+          <p>Password: cyber123</p>
+        </div>
+        <input
+          type="text"
+          placeholder="Username"
+          className="w-full p-3 rounded-xl bg-black border border-green-700"
+        />
 
-    for(let i=0;i<d.length;i+=4){
-      let r=d[i], g=d[i+1], b=d[i+2]
+        <input
+          type="password"
+          placeholder="Password"
+          className="w-full p-3 rounded-xl bg-black border border-green-700"
+        />
 
-      if(f==="bw"){
-        const avg=(r+g+b)/3
-        d[i]=d[i+1]=d[i+2]=avg
-      }
-      if(f==="vintage"){
-        d[i]=r*0.9+20
-        d[i+1]=g*0.7+15
-        d[i+2]=b*0.4+10
-      }
-      if(f==="warm"){
-        d[i]=r+20
-      }
-      if(f==="cool"){
-        d[i+2]=b+20
-      }
-      if(f==="contrast"){
-        d[i]=((r-128)*1.4)+128
-        d[i+1]=((g-128)*1.4)+128
-        d[i+2]=((b-128)*1.4)+128
-      }
-    }
+        <button className="w-full bg-green-500 text-black font-bold p-3 rounded-xl hover:scale-105 transition">
+          LOGIN
+        </button>
 
-    ctx.putImageData(img,0,0)
-  }
+        <button className="w-full border border-green-500 p-3 rounded-xl hover:bg-green-500 hover:text-black transition">
+          CREATE ACCOUNT
+        </button>
+      </div>
 
-  function takePhoto(){
-    const w = video.videoWidth
-    const h = video.videoHeight
-    canvas.width = w
-    canvas.height = h
+      <p className="text-sm text-green-500 mt-4">
+        *Demo UI login. Untuk akun asli bisa ditambahkan Firebase/Supabase.
+      </p>
+    </div>
+  </section>
 
-    if(mirror){
-      ctx.translate(w,0)
-      ctx.scale(-1,1)
-    }
+  <section className="py-12">
+    <h2 className="text-4xl font-bold mb-8 text-center text-green-300">
+      Panduan Cyber & Coding
+    </h2>
 
-    ctx.drawImage(video,0,0,w,h)
+    <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      {guides.map((guide, index) => (
+        
+        <div
+          key={index}
+          className="bg-zinc-900 border border-green-800 rounded-2xl overflow-hidden hover:scale-105 transition shadow-xl animate-[pulse_5s_infinite]"
+        >
+          <img
+            src={guideImages[index % guideImages.length]}
+            alt={guide}
+            className="w-full h-44 object-cover"
+          />
 
-    if(mirror){
-      ctx.setTransform(1,0,0,1,0,0)
-    }
+          <div className="p-5">
+          <h3 className="text-xl font-bold text-green-300">
+            #{index + 1} {guide}
+          </h3>
 
-    applyFilter(ctx,w,h)
+          <p className="mt-3 text-green-200 leading-7 text-sm">
+            Panduan lengkap untuk mempelajari {guide.toLowerCase()} secara
+            bertahap untuk pemula.
+          </p>
 
-    // flash effect
-    flash.style.opacity = 1
-    setTimeout(()=> flash.style.opacity = 0, 120)
+          <button className="mt-5 border border-green-500 px-4 py-2 rounded-xl hover:bg-green-500 hover:text-black transition">
+            Baca Panduan
+          </button>
+          </div>
+        </div>
+      ))}
+    </div>
+  </section>
 
-    lastImage = canvas.toDataURL("image/png")
-  }
+  <section className="py-12">
+    <div className="rounded-3xl overflow-hidden border border-green-700 shadow-2xl mb-10">
+      <video
+        autoPlay
+        muted
+        loop
+        className="w-full h-[300px] object-cover"
+      >
+        <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4" />
+      </video>
+    </div>
 
-  function countdownShot(){
-    let n = 3
-    overlay.style.opacity = 1
-    overlay.textContent = n
+    <div className="bg-zinc-900 border border-green-800 rounded-3xl p-8 shadow-2xl">
+      <h2 className="text-4xl font-bold mb-6 text-green-300">
+        Apa Itu Bug Bounty?
+      </h2>
 
-    const timer = setInterval(()=>{
-      n--
-      if(n<=0){
-        clearInterval(timer)
-        overlay.style.opacity = 0
-        takePhoto()
-      } else {
-        overlay.textContent = n
-      }
-    },1000)
-  }
+      <p className="leading-8 text-green-200">
+        Bug bounty adalah program legal dari perusahaan yang mengizinkan
+        researcher keamanan mencari celah keamanan pada sistem mereka.
+        Jika menemukan bug yang valid, biasanya researcher mendapatkan
+        reward atau penghasilan.
+      </p>
 
-  function download(){
-    if(!lastImage) return alert("Belum ada foto")
-    const a = document.createElement("a")
-    a.href = lastImage
-    a.download = "foto.png"
-    a.click()
-  }
+      <div className="mt-6 space-y-3 text-green-300">
+        <p>• Belajar dasar HTTP & HTTPS</p>
+        <p>• Pelajari HTML, JavaScript, dan API</p>
+        <p>• Gunakan tools legal seperti Burp Suite & OWASP ZAP</p>
+        <p>• Fokus pada pembelajaran ethical hacking</p>
+        <p>• Jangan menyerang website tanpa izin</p>
+      </div>
+    </div>
+  </section>
 
-  function clearCanvas(){
-    ctx.clearRect(0,0,canvas.width,canvas.height)
-    lastImage = null
-  }
+  <footer className="py-10 border-t border-green-800 text-center text-green-500">
+    <p>CyberBasicClassRoom © 2026</p>
+    <p className="mt-2">Create by 4rknnnajaaa</p>
+  </footer>
+</div>
 
-  btnStart.onclick = startCamera
-  btnSwitch.onclick = switchCamera
-  btnMirror.onclick = setMirror
-  btnShot.onclick = takePhoto
-  btnCountdown.onclick = countdownShot
-  btnDownload.onclick = download
-  btnClear.onclick = clearCanvas
-</script>
-
-</body>
-</html>
+); }
